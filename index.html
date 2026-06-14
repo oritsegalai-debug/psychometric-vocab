@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="מילים לפסיכומטרי">
+<title>אוצר מילים | פסיכומטרי ואמי״ר</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <span class="navbar-title">📚 מילים לפסיכומטרי</span>
+  <div class="navbar-actions">
+    <button class="icon-btn" onclick="openSettings()" title="הגדרות">⚙️</button>
+  </div>
+</nav>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" id="tab-fc" data-tab="fc">
+    <span class="tab-icon">🃏</span>כרטיסיות
+  </button>
+  <button class="tab-btn" id="tab-quiz" data-tab="quiz">
+    <span class="tab-icon">✍️</span>מבחן
+  </button>
+  <button class="tab-btn" id="tab-type" data-tab="type">
+    <span class="tab-icon">⌨️</span>הקלדה
+  </button>
+  <button class="tab-btn" id="tab-list" data-tab="list">
+    <span class="tab-icon">🔍</span>חיפוש
+  </button>
+  <button class="tab-btn" id="tab-progress" data-tab="progress">
+    <span class="tab-icon">📊</span>התקדמות
+  </button>
+</div>
+
+<!-- ── FLASHCARDS VIEW ── -->
+<div class="view active" id="view-fc">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <button id="fc-dir-label" class="fc-toggle" onclick="toggleFCDir()">אנגלית → עברית</button>
+    <span id="fc-counter" class="fc-counter">1 / 1692</span>
+  </div>
+  <div class="fc-progress"><div class="fc-progress-fill" id="fc-prog-fill" style="width:0%"></div></div>
+
+  <div id="fc-empty" style="display:none;text-align:center;padding:40px;color:var(--text2)">
+    אין מילים במועדפים. הוסף ⭐ לכרטיסיות.
+  </div>
+  <div id="fc-main">
+    <div class="fc-arena" id="fc-arena">
+      <div class="fc-card" id="fc-card">
+        <div class="fc-face front">
+          <div class="fc-lang" id="fc-front-lang">אנגלית</div>
+          <div class="fc-word en" id="fc-front-word">breath</div>
+          <div class="fc-hint">לחץ/החלק לחשיפה</div>
+          <button class="fc-star" id="fc-star" onclick="event.stopPropagation();toggleFCStar()">☆</button>
+        </div>
+        <div class="fc-face back">
+          <div class="fc-lang" id="fc-back-lang">עברית</div>
+          <div class="fc-word" id="fc-back-word">לנשום, נשימה</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-buttons">
+      <button class="fc-btn no"  onclick="fcAnswer(false)">✗ לא ידעתי</button>
+      <button class="fc-btn yes" onclick="fcAnswer(true)">✓ ידעתי!</button>
+    </div>
+    <div class="fc-nav">
+      <button class="fc-nav-btn" onclick="fcNav(-1)">← קודם</button>
+      <button class="fc-nav-btn" onclick="fcNav(1)">הבא →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── QUIZ VIEW ── -->
+<div class="view" id="view-quiz">
+  <div class="quiz-header">
+    <div class="quiz-score-bar">
+      <span>✓ <span id="q-score">0</span></span>
+      <span style="color:var(--text2)">מתוך <span id="q-total">20</span></span>
+      <span style="margin-right:auto;color:var(--text2)" id="q-num">שאלה 1/20</span>
+      <button class="fc-toggle" onclick="toggleQuizDir()" id="quiz-dir-btn">אנגלית → עברית</button>
+    </div>
+    <div class="q-progress"><div class="q-progress-fill" id="q-prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="quiz-body">
+    <div class="quiz-card">
+      <div class="quiz-q-label" id="quiz-q-label">מה המשמעות בעברית?</div>
+      <div class="quiz-question en" id="quiz-question">—</div>
+    </div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <button class="quiz-next" id="quiz-next" onclick="quizNext()">הבא →</button>
+  </div>
+
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-emoji">🏆</div>
+    <div class="result-score">—</div>
+    <div class="result-detail"></div>
+    <button class="result-btn" onclick="initQuiz()">סיבוב נוסף</button>
+    <button class="result-btn" style="background:var(--card-bg);color:var(--text);border:1.5px solid var(--border);" onclick="switchTab('fc')">לכרטיסיות</button>
+  </div>
+</div>
+
+<!-- ── TYPE VIEW ── -->
+<div class="view" id="view-type">
+  <div class="type-card">
+    <div style="font-size:0.7rem;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">תרגם לעברית</div>
+    <div class="type-word en" id="type-word">—</div>
+    <div class="type-hint" id="type-counter">1 / 1692</div>
+    <input class="type-input" id="type-input" placeholder="כתוב את התרגום..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <div class="type-feedback" id="type-feedback"></div>
+  </div>
+  <button class="type-check" id="type-check-btn" onclick="checkType()">בדוק</button>
+  <div class="type-nav">
+    <button class="type-nav-btn" onclick="typeIdx=Math.max(0,typeIdx-1);renderType()">← קודם</button>
+    <button class="type-nav-btn" onclick="typeNext()">דלג →</button>
+  </div>
+</div>
+
+<!-- ── LIST VIEW ── -->
+<div class="view" id="view-list">
+  <div class="search-box">
+    <input class="search-input" id="list-search" placeholder="חפש מילה..." autocomplete="off">
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn active" data-f="all">הכל</button>
+    <button class="filter-btn" data-f="starred">⭐ מועדפים</button>
+    <button class="filter-btn" data-f="known">✓ ידועים</button>
+    <button class="filter-btn" data-f="unknown">✗ לא ידועים</button>
+  </div>
+  <div class="list-count" id="list-count">1692 מילים</div>
+  <div class="word-list" id="word-list"></div>
+</div>
+
+<!-- ── PROGRESS VIEW ── -->
+<div class="view" id="view-progress">
+  <div class="progress-card">
+    <div class="progress-title">ההתקדמות שלך</div>
+    <div class="big-circle">
+      <span id="prog-pct">0%</span>
+      <small>ידוע</small>
+    </div>
+    <div class="prog-row">
+      <span class="prog-label">ידועים</span>
+      <div class="prog-bar"><div class="prog-fill" id="prog-known-fill" style="width:0%;background:#16a34a"></div></div>
+      <span class="prog-count" id="prog-known-num">0</span>
+    </div>
+    <div class="prog-row">
+      <span class="prog-label">לא ידועים</span>
+      <div class="prog-bar"><div class="prog-fill" id="prog-unk-fill" style="width:0%;background:#dc2626"></div></div>
+      <span class="prog-count" id="prog-unk-num">1692</span>
+    </div>
+    <div class="prog-row">
+      <span class="prog-label">מועדפים ⭐</span>
+      <div class="prog-bar"><div class="prog-fill" id="prog-star-fill" style="width:0%;background:#f59e0b"></div></div>
+      <span class="prog-count" id="prog-star-num">0</span>
+    </div>
+    <div style="margin-top:14px;font-size:0.78rem;color:var(--text2);text-align:center">מתוך 1,692 מילים</div>
+  </div>
+  <button class="reset-btn" onclick="resetProgress()">🔄 אפס התקדמות</button>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-modal" id="settings-modal">
+  <div class="settings-sheet">
+    <div class="settings-title">⚙️ הגדרות</div>
+    <div class="settings-row">
+      <span class="settings-row-label">🌙 מצב כהה</span>
+      <button class="toggle-switch" id="dark-toggle"></button>
+    </div>
+    <div class="settings-row">
+      <span class="settings-row-label">⭐ מבחן — מועדפים בלבד</span>
+      <button class="toggle-switch" id="quiz-starred-toggle"></button>
+    </div>
+    <div class="settings-row">
+      <span class="settings-row-label">⭐ כרטיסיות — מועדפים בלבד</span>
+      <button class="toggle-switch" id="fc-starred-toggle"></button>
+    </div>
+    <div class="settings-row" style="border-bottom:none">
+      <span class="settings-row-label" style="font-size:0.75rem;color:var(--text2)">1,692 מילים | אוצר מילים ירזלוי</span>
+    </div>
+    <button class="settings-close" onclick="closeSettings()">סגור</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="words.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

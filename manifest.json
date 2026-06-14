@@ -1,0 +1,14 @@
+{
+  "name": "אוצר מילים לפסיכומטרי ואמי\"ר",
+  "short_name": "מילים לפסיכומטרי",
+  "description": "1,692 מילים לפסיכומטרי ולמבחן אמי\"ר עם כרטיסיות, מבחן, הקלדה וחזרה מרווחת",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
