@@ -205,8 +205,8 @@ document.getElementById('fc-arena').addEventListener('touchend', e => {
   fcTouchX = null; fcTouchY = null;
   e.preventDefault(); // block synthetic click so card doesn't double-flip
   if (Math.abs(dx) < 40 && Math.abs(dy) < 40) { fcFlip(); return; }
-  if (dx < -40) fcNav(1);
-  else if (dx > 40) fcNav(-1);
+  if (dx > 40) fcNav(1);
+  else if (dx < -40) fcNav(-1);
 });
 // mouse click for desktop
 document.getElementById('fc-card').addEventListener('click', fcFlip);
