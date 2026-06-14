@@ -2,11 +2,12 @@
 const S = {
   known: {}, starred: {},
   quizDir: 'enHe', quizLen: 20,
-  fcDir: 'heEn',
+  fcDir: 'enHe',
   fcGroup: 'all', quizGroup: 'all', typeGroup: 'all',
   darkMode: false,
   listFilter: 'all', listSearch: '',
   amirLevel: null,
+  _v: 2,
 };
 
 function save() { localStorage.setItem('pv', JSON.stringify(S)); }
@@ -17,6 +18,8 @@ function load() {
     // migrate old state keys
     if ('fcOnlyStarred' in S)   { S.fcGroup   = S.fcOnlyStarred   ? 'starred' : 'all'; delete S.fcOnlyStarred; }
     if ('quizOnlyStarred' in S) { S.quizGroup = S.quizOnlyStarred ? 'starred' : 'all'; delete S.quizOnlyStarred; }
+    // v2: force English-first for flashcards
+    if (!d._v || d._v < 2) { S.fcDir = 'enHe'; S._v = 2; save(); }
   } catch(e) {}
 }
 load();
