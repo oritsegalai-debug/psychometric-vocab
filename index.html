@@ -218,41 +218,45 @@
 <!-- ── AMIR VIEW ── -->
 <div class="view" id="view-amir">
 
-  <!-- Level badge + placement button -->
-  <div class="amir-header" id="amir-header">
-    <div class="amir-level-row">
-      <span class="amir-level-label">רמה שלך:</span>
-      <span class="amir-level-badge" id="amir-level-badge">לא נקבע</span>
+  <!-- Hero header -->
+  <div class="amir-hero" id="amir-header">
+    <div>
+      <div class="amir-hero-title">קריאה ואוצר מילים</div>
+      <div class="amir-hero-sub">רמה: <span id="amir-level-badge" class="amir-level-badge">לא נקבע</span></div>
     </div>
     <button class="amir-placement-btn" onclick="startPlacement()">🎯 מבחן מיקום</button>
   </div>
 
   <!-- Placement test -->
   <div id="amir-placement" style="display:none">
-    <div class="amir-pl-header">
-      <span class="amir-pl-counter" id="amir-pl-counter">שאלה 1 / 15</span>
+    <div class="amir-pl-top">
+      <div class="amir-pl-meta">
+        <span id="amir-pl-counter">שאלה 1 / 15</span>
+        <span class="amir-pl-lvl" id="amir-pl-lvl-tag"></span>
+      </div>
       <div class="amir-pl-bar"><div class="amir-pl-fill" id="amir-pl-fill" style="width:0%"></div></div>
     </div>
-    <div class="amir-sentence-card">
-      <div class="amir-sentence-text" id="amir-pl-sentence"></div>
+    <div class="amir-card">
+      <div class="amir-label-tag">בחר את המילה החסרה</div>
+      <div class="amir-sentence" id="amir-pl-sentence"></div>
     </div>
-    <div class="amir-options" id="amir-pl-options"></div>
+    <div class="amir-opts" id="amir-pl-options"></div>
   </div>
 
   <!-- Placement result -->
-  <div id="amir-placement-result" class="amir-result-card" style="display:none">
-    <div class="amir-result-emoji" id="amir-pl-emoji">📊</div>
+  <div id="amir-placement-result" class="amir-result" style="display:none">
+    <div class="amir-result-icon" id="amir-pl-emoji">📊</div>
     <div class="amir-result-score" id="amir-pl-score"></div>
     <div class="amir-result-level" id="amir-pl-result-level"></div>
-    <button class="amir-btn-main" onclick="endPlacement()">המשך ללמידה →</button>
+    <button class="amir-cta" onclick="endPlacement()">המשך ללמידה ←</button>
   </div>
 
-  <!-- Main practice area -->
+  <!-- Main practice -->
   <div id="amir-main">
-    <!-- Sub-mode tabs -->
-    <div class="amir-mode-row">
-      <button class="amir-mode-btn active" id="amir-mode-fill" onclick="setAmirMode('fill')">✏️ השלמת משפטים</button>
-      <button class="amir-mode-btn" id="amir-mode-para" onclick="setAmirMode('para')">🔄 פרפראזה</button>
+    <!-- Segmented control -->
+    <div class="amir-seg">
+      <button class="amir-seg-btn active" id="amir-mode-fill" onclick="setAmirMode('fill')">✏️ השלמת משפטים</button>
+      <button class="amir-seg-btn" id="amir-mode-para" onclick="setAmirMode('para')">🔄 פרפראזה</button>
     </div>
 
     <!-- Level chips -->
@@ -266,27 +270,35 @@
 
     <!-- Fill-in-blank -->
     <div id="amir-fill-content">
-      <div class="amir-q-counter" id="amir-fill-counter"></div>
-      <div class="amir-sentence-card">
-        <div class="amir-sentence-text" id="amir-fill-sentence"></div>
-        <div class="amir-word-hint" id="amir-fill-hint"></div>
+      <div class="amir-prog-row">
+        <span class="amir-prog-label" id="amir-fill-counter"></span>
+        <div class="amir-prog-track"><div class="amir-prog-bar" id="amir-fill-bar" style="width:0%"></div></div>
       </div>
-      <div class="amir-options" id="amir-fill-options"></div>
-      <button class="amir-next-btn" id="amir-fill-next" onclick="amirFillNext()" style="display:none">הבא →</button>
+      <div class="amir-card">
+        <div class="amir-label-tag">בחר את המילה החסרה</div>
+        <div class="amir-sentence" id="amir-fill-sentence"></div>
+        <div class="amir-feedback" id="amir-fill-hint"></div>
+      </div>
+      <div class="amir-opts" id="amir-fill-options"></div>
+      <button class="amir-cta" id="amir-fill-next" onclick="amirFillNext()" style="display:none">שאלה הבאה ←</button>
     </div>
 
     <!-- Paraphrase -->
     <div id="amir-para-content" style="display:none">
-      <div class="amir-q-counter" id="amir-para-counter"></div>
-      <div class="amir-sentence-card">
-        <div class="amir-mini-label">משפט מקורי:</div>
-        <div class="amir-sentence-text" id="amir-para-original"></div>
-        <hr class="amir-divider">
-        <div class="amir-mini-label">ניסוח חלופי:</div>
-        <div class="amir-sentence-text" id="amir-para-paraphrase"></div>
+      <div class="amir-prog-row">
+        <span class="amir-prog-label" id="amir-para-counter"></span>
+        <div class="amir-prog-track"><div class="amir-prog-bar" id="amir-para-bar" style="width:0%"></div></div>
       </div>
-      <div class="amir-options" id="amir-para-options"></div>
-      <button class="amir-next-btn" id="amir-para-next" onclick="amirParaNext()" style="display:none">הבא →</button>
+      <div class="amir-card">
+        <div class="amir-label-tag">משפט מקורי</div>
+        <div class="amir-sentence" id="amir-para-original"></div>
+        <div class="amir-para-divider"></div>
+        <div class="amir-label-tag amir-label-alt">ניסוח חלופי — בחר את המילה החסרה</div>
+        <div class="amir-sentence" id="amir-para-paraphrase"></div>
+        <div class="amir-feedback" id="amir-para-hint"></div>
+      </div>
+      <div class="amir-opts" id="amir-para-options"></div>
+      <button class="amir-cta" id="amir-para-next" onclick="amirParaNext()" style="display:none">שאלה הבאה ←</button>
     </div>
   </div>
 </div>

@@ -624,6 +624,36 @@ function amirGetPool(items) {
   return items.filter(s => WORD_LEVELS(s.word) === lvl);
 }
 
+function highlightBlank(text) {
+  return text.replace(/_+/, '<span class="amir-blank">_______</span>');
+}
+
+const AMIR_LETTERS = ['A', 'B', 'C', 'D'];
+
+function buildAmirOpts(opts, correctVal, boxId, onAnswer) {
+  const box = document.getElementById(boxId);
+  box.innerHTML = '';
+  let answered = false;
+  opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'amir-opt';
+    btn.dataset.correct = (opt === correctVal).toString();
+    btn.innerHTML = `<span class="amir-opt-letter">${AMIR_LETTERS[i]}</span><span class="amir-opt-text">${opt}</span>`;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      const ok = btn.dataset.correct === 'true';
+      btn.classList.add(ok ? 'correct' : 'wrong');
+      box.querySelectorAll('.amir-opt').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+      onAnswer(ok);
+    });
+    box.appendChild(btn);
+  });
+}
+
 function setAmirMode(mode) {
   amirMode = mode;
   document.getElementById('amir-mode-fill').classList.toggle('active', mode === 'fill');
@@ -649,43 +679,26 @@ function initAmirFill() {
 }
 
 function renderAmirFill() {
-  if (!amirFillPool.length) {
-    document.getElementById('amir-fill-sentence').textContent = 'אין משפטים ברמה זו.';
+  const total = amirFillPool.length;
+  if (!total) {
+    document.getElementById('amir-fill-sentence').innerHTML = '<em>אין משפטים ברמה זו.</em>';
     document.getElementById('amir-fill-options').innerHTML = '';
     document.getElementById('amir-fill-hint').textContent = '';
     document.getElementById('amir-fill-counter').textContent = '';
+    document.getElementById('amir-fill-bar').style.width = '0%';
     document.getElementById('amir-fill-next').style.display = 'none';
     return;
   }
-  amirFillAnswered = false;
-  const pos  = amirFillIdx % amirFillPool.length;
+  const pos  = amirFillIdx % total;
   const item = amirFillPool[pos];
-  document.getElementById('amir-fill-counter').textContent = `${pos + 1} / ${amirFillPool.length}`;
-  document.getElementById('amir-fill-sentence').textContent = item.sentence;
+  document.getElementById('amir-fill-counter').textContent = `שאלה ${pos + 1} / ${total}`;
+  document.getElementById('amir-fill-bar').style.width = `${((pos + 1) / total) * 100}%`;
+  document.getElementById('amir-fill-sentence').innerHTML = highlightBlank(item.sentence);
   document.getElementById('amir-fill-hint').textContent = '';
   document.getElementById('amir-fill-next').style.display = 'none';
-
-  const opts = shuffle([item.word, ...item.d]);
-  const box  = document.getElementById('amir-fill-options');
-  box.innerHTML = '';
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'amir-opt';
-    btn.textContent = opt;
-    btn.dataset.correct = (opt === item.word).toString();
-    btn.addEventListener('click', () => {
-      if (amirFillAnswered) return;
-      amirFillAnswered = true;
-      const ok = btn.dataset.correct === 'true';
-      btn.classList.add(ok ? 'correct' : 'wrong');
-      box.querySelectorAll('.amir-opt').forEach(b => {
-        b.disabled = true;
-        if (b.dataset.correct === 'true') b.classList.add('correct');
-      });
-      document.getElementById('amir-fill-hint').textContent = ok ? '' : `✓ ${item.word}`;
-      document.getElementById('amir-fill-next').style.display = 'block';
-    });
-    box.appendChild(btn);
+  buildAmirOpts(shuffle([item.word, ...item.d]), item.word, 'amir-fill-options', ok => {
+    document.getElementById('amir-fill-hint').textContent = ok ? '' : `✗ התשובה הנכונה: ${item.word}`;
+    document.getElementById('amir-fill-next').style.display = 'block';
   });
 }
 
@@ -707,42 +720,28 @@ function initAmirPara() {
 }
 
 function renderAmirPara() {
-  if (!amirParaPool.length) {
+  const total = amirParaPool.length;
+  if (!total) {
     document.getElementById('amir-para-original').textContent = 'אין זוגות ברמה זו.';
-    document.getElementById('amir-para-paraphrase').textContent = '';
+    document.getElementById('amir-para-paraphrase').innerHTML = '';
     document.getElementById('amir-para-options').innerHTML = '';
     document.getElementById('amir-para-counter').textContent = '';
+    document.getElementById('amir-para-bar').style.width = '0%';
+    document.getElementById('amir-para-hint').textContent = '';
     document.getElementById('amir-para-next').style.display = 'none';
     return;
   }
-  amirParaAnswered = false;
-  const pos  = amirParaIdx % amirParaPool.length;
+  const pos  = amirParaIdx % total;
   const item = amirParaPool[pos];
-  document.getElementById('amir-para-counter').textContent = `${pos + 1} / ${amirParaPool.length}`;
-  document.getElementById('amir-para-original').textContent   = item.original;
-  document.getElementById('amir-para-paraphrase').textContent = item.paraphrase;
+  document.getElementById('amir-para-counter').textContent = `שאלה ${pos + 1} / ${total}`;
+  document.getElementById('amir-para-bar').style.width = `${((pos + 1) / total) * 100}%`;
+  document.getElementById('amir-para-original').textContent = item.original;
+  document.getElementById('amir-para-paraphrase').innerHTML = highlightBlank(item.paraphrase);
+  document.getElementById('amir-para-hint').textContent = '';
   document.getElementById('amir-para-next').style.display = 'none';
-
-  const opts = shuffle([item.answer, ...item.d]);
-  const box  = document.getElementById('amir-para-options');
-  box.innerHTML = '';
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'amir-opt';
-    btn.textContent = opt;
-    btn.dataset.correct = (opt === item.answer).toString();
-    btn.addEventListener('click', () => {
-      if (amirParaAnswered) return;
-      amirParaAnswered = true;
-      const ok = btn.dataset.correct === 'true';
-      btn.classList.add(ok ? 'correct' : 'wrong');
-      box.querySelectorAll('.amir-opt').forEach(b => {
-        b.disabled = true;
-        if (b.dataset.correct === 'true') b.classList.add('correct');
-      });
-      document.getElementById('amir-para-next').style.display = 'block';
-    });
-    box.appendChild(btn);
+  buildAmirOpts(shuffle([item.answer, ...item.d]), item.answer, 'amir-para-options', ok => {
+    document.getElementById('amir-para-hint').textContent = ok ? '' : `✗ התשובה הנכונה: ${item.answer}`;
+    document.getElementById('amir-para-next').style.display = 'block';
   });
 }
 
@@ -785,38 +784,21 @@ function startPlacement() {
 }
 
 function renderPlacement() {
-  const q = plQuestions[plIdx];
+  const q     = plQuestions[plIdx];
   const total = plQuestions.length;
+  const lvlLabels = {1: 'רמה בסיסית', 2: 'רמה בינונית', 3: 'רמה מתקדמת'};
   document.getElementById('amir-pl-counter').textContent = `שאלה ${plIdx + 1} / ${total}`;
+  document.getElementById('amir-pl-lvl-tag').textContent = lvlLabels[q._level] || '';
   document.getElementById('amir-pl-fill').style.width   = `${(plIdx / total) * 100}%`;
-  document.getElementById('amir-pl-sentence').textContent = q.sentence;
+  document.getElementById('amir-pl-sentence').innerHTML = highlightBlank(q.sentence);
 
-  const opts = shuffle([q.word, ...q.d]);
-  const box  = document.getElementById('amir-pl-options');
-  box.innerHTML = '';
-  let answered = false;
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'amir-opt';
-    btn.textContent = opt;
-    btn.dataset.correct = (opt === q.word).toString();
-    btn.addEventListener('click', () => {
-      if (answered) return;
-      answered = true;
-      const ok = btn.dataset.correct === 'true';
-      btn.classList.add(ok ? 'correct' : 'wrong');
-      box.querySelectorAll('.amir-opt').forEach(b => {
-        b.disabled = true;
-        if (b.dataset.correct === 'true') b.classList.add('correct');
-      });
-      if (ok) { plScore++; plCorrectByLevel[q._level]++; }
-      setTimeout(() => {
-        plIdx++;
-        if (plIdx >= plQuestions.length) showPlacementResult();
-        else renderPlacement();
-      }, 850);
-    });
-    box.appendChild(btn);
+  buildAmirOpts(shuffle([q.word, ...q.d]), q.word, 'amir-pl-options', ok => {
+    if (ok) { plScore++; plCorrectByLevel[q._level]++; }
+    setTimeout(() => {
+      plIdx++;
+      if (plIdx >= plQuestions.length) showPlacementResult();
+      else renderPlacement();
+    }, 850);
   });
 }
 
