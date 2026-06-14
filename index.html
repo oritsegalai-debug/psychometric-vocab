@@ -33,7 +33,7 @@
     <span class="tab-icon">⌨️</span>הקלדה
   </button>
   <button class="tab-btn" id="tab-list" data-tab="list">
-    <span class="tab-icon">🔍</span>חיפוש
+    <span class="tab-icon">🔍</span>רשימה
   </button>
   <button class="tab-btn" id="tab-progress" data-tab="progress">
     <span class="tab-icon">📊</span>התקדמות
@@ -42,14 +42,21 @@
 
 <!-- ── FLASHCARDS VIEW ── -->
 <div class="view active" id="view-fc">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+  <!-- Group chips -->
+  <div class="filter-btns" id="fc-groups">
+    <button class="filter-btn active" data-g="all" onclick="setFCGroup('all')">הכל</button>
+    <button class="filter-btn" data-g="starred" onclick="setFCGroup('starred')">⭐ מועדפים<span id="fc-g-star-c"></span></button>
+    <button class="filter-btn" data-g="unknown" onclick="setFCGroup('unknown')">✗ לא ידעתי<span id="fc-g-unk-c"></span></button>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
     <button id="fc-dir-label" class="fc-toggle" onclick="toggleFCDir()">אנגלית → עברית</button>
     <span id="fc-counter" class="fc-counter">1 / 1692</span>
   </div>
   <div class="fc-progress"><div class="fc-progress-fill" id="fc-prog-fill" style="width:0%"></div></div>
 
-  <div id="fc-empty" style="display:none;text-align:center;padding:40px;color:var(--text2)">
-    אין מילים במועדפים. הוסף ⭐ לכרטיסיות.
+  <div id="fc-empty" style="display:none;text-align:center;padding:40px;color:var(--text2);font-size:0.9rem;line-height:1.6">
+    אין מועדפים. הוסף ⭐ לכרטיסיות.
   </div>
   <div id="fc-main">
     <div class="fc-arena" id="fc-arena">
@@ -57,7 +64,7 @@
         <div class="fc-face front">
           <div class="fc-lang" id="fc-front-lang">אנגלית</div>
           <div class="fc-word en" id="fc-front-word">breath</div>
-          <div class="fc-hint">לחץ/החלק לחשיפה</div>
+          <div class="fc-hint">לחץ / החלק לחשיפה</div>
           <button class="fc-star" id="fc-star" onclick="event.stopPropagation();toggleFCStar()">☆</button>
         </div>
         <div class="fc-face back">
@@ -66,7 +73,6 @@
         </div>
       </div>
     </div>
-
     <div class="fc-buttons">
       <button class="fc-btn no"  onclick="fcAnswer(false)">✗ לא ידעתי</button>
       <button class="fc-btn yes" onclick="fcAnswer(true)">✓ ידעתי!</button>
@@ -80,6 +86,13 @@
 
 <!-- ── QUIZ VIEW ── -->
 <div class="view" id="view-quiz">
+  <!-- Group chips -->
+  <div class="filter-btns" id="quiz-groups">
+    <button class="filter-btn active" data-g="all" onclick="setQuizGroup('all')">הכל</button>
+    <button class="filter-btn" data-g="starred" onclick="setQuizGroup('starred')">⭐ מועדפים<span id="quiz-g-star-c"></span></button>
+    <button class="filter-btn" data-g="unknown" onclick="setQuizGroup('unknown')">✗ לא ידעתי<span id="quiz-g-unk-c"></span></button>
+  </div>
+
   <div class="quiz-header">
     <div class="quiz-score-bar">
       <span>✓ <span id="q-score">0</span></span>
@@ -110,6 +123,13 @@
 
 <!-- ── TYPE VIEW ── -->
 <div class="view" id="view-type">
+  <!-- Group chips -->
+  <div class="filter-btns" id="type-groups">
+    <button class="filter-btn active" data-g="all" onclick="setTypeGroup('all')">הכל</button>
+    <button class="filter-btn" data-g="starred" onclick="setTypeGroup('starred')">⭐ מועדפים<span id="type-g-star-c"></span></button>
+    <button class="filter-btn" data-g="unknown" onclick="setTypeGroup('unknown')">✗ לא ידעתי<span id="type-g-unk-c"></span></button>
+  </div>
+
   <div class="type-card">
     <div style="font-size:0.7rem;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">תרגם לעברית</div>
     <div class="type-word en" id="type-word">—</div>
@@ -126,16 +146,36 @@
 
 <!-- ── LIST VIEW ── -->
 <div class="view" id="view-list">
+  <!-- Search + select toggle -->
   <div class="search-box">
-    <input class="search-input" id="list-search" placeholder="חפש מילה..." autocomplete="off">
+    <input class="search-input" id="list-search" placeholder="חפש מילה בעברית או אנגלית..." autocomplete="off">
+    <button class="select-btn" id="list-select-btn" onclick="toggleSelectMode()">בחר</button>
   </div>
+
+  <!-- Filter chips -->
   <div class="filter-btns">
     <button class="filter-btn active" data-f="all">הכל</button>
     <button class="filter-btn" data-f="starred">⭐ מועדפים</button>
     <button class="filter-btn" data-f="known">✓ ידועים</button>
     <button class="filter-btn" data-f="unknown">✗ לא ידועים</button>
   </div>
-  <div class="list-count" id="list-count">1692 מילים</div>
+
+  <!-- Select mode actions (hidden until select mode) -->
+  <div id="list-select-actions" style="display:none;" class="select-actions">
+    <button class="select-all-btn" id="select-all-btn" onclick="toggleSelectAll()">סמן הכל</button>
+    <span style="flex:1"></span>
+    <button class="bulk-mini-btn" onclick="bulkAction('star')">⭐</button>
+    <button class="bulk-mini-btn" onclick="bulkAction('unstar')">☆</button>
+    <button class="bulk-mini-btn" onclick="bulkAction('known')">✓</button>
+    <button class="bulk-mini-btn" onclick="bulkAction('unknown')">✗</button>
+  </div>
+
+  <!-- Info + practice button -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+    <div class="list-count" id="list-count">1692 מילים</div>
+    <button id="practice-group-btn" class="practice-btn" onclick="practiceGroup()" style="display:none">▶ תרגל קבוצה זו</button>
+  </div>
+
   <div class="word-list" id="word-list"></div>
 </div>
 
@@ -145,26 +185,40 @@
     <div class="progress-title">ההתקדמות שלך</div>
     <div class="big-circle">
       <span id="prog-pct">0%</span>
-      <small>ידוע</small>
+      <small>שולט</small>
     </div>
     <div class="prog-row">
-      <span class="prog-label">ידועים</span>
+      <span class="prog-label">✓ ידועים</span>
       <div class="prog-bar"><div class="prog-fill" id="prog-known-fill" style="width:0%;background:#16a34a"></div></div>
       <span class="prog-count" id="prog-known-num">0</span>
     </div>
     <div class="prog-row">
-      <span class="prog-label">לא ידועים</span>
+      <span class="prog-label">✗ לא ידועים</span>
       <div class="prog-bar"><div class="prog-fill" id="prog-unk-fill" style="width:0%;background:#dc2626"></div></div>
-      <span class="prog-count" id="prog-unk-num">1692</span>
+      <span class="prog-count" id="prog-unk-num">0</span>
     </div>
     <div class="prog-row">
-      <span class="prog-label">מועדפים ⭐</span>
+      <span class="prog-label">לא נגעת</span>
+      <div class="prog-bar"><div class="prog-fill" id="prog-unseen-fill" style="width:100%;background:#94a3b8"></div></div>
+      <span class="prog-count" id="prog-unseen-num">1692</span>
+    </div>
+    <div class="prog-row">
+      <span class="prog-label">⭐ מועדפים</span>
       <div class="prog-bar"><div class="prog-fill" id="prog-star-fill" style="width:0%;background:#f59e0b"></div></div>
       <span class="prog-count" id="prog-star-num">0</span>
     </div>
     <div style="margin-top:14px;font-size:0.78rem;color:var(--text2);text-align:center">מתוך 1,692 מילים</div>
   </div>
   <button class="reset-btn" onclick="resetProgress()">🔄 אפס התקדמות</button>
+</div>
+
+<!-- BULK ACTION BAR (fixed bottom) -->
+<div class="bulk-bar" id="bulk-bar">
+  <span id="bulk-count" style="font-weight:700;font-size:0.9rem;color:var(--accent)"></span>
+  <button class="bulk-btn" onclick="bulkAction('star')">⭐ מועדף</button>
+  <button class="bulk-btn" onclick="bulkAction('unstar')">☆ הסר</button>
+  <button class="bulk-btn" onclick="bulkAction('known')">✓ ידוע</button>
+  <button class="bulk-btn red" onclick="bulkAction('unknown')">✗ לא ידוע</button>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -174,14 +228,6 @@
     <div class="settings-row">
       <span class="settings-row-label">🌙 מצב כהה</span>
       <button class="toggle-switch" id="dark-toggle"></button>
-    </div>
-    <div class="settings-row">
-      <span class="settings-row-label">⭐ מבחן — מועדפים בלבד</span>
-      <button class="toggle-switch" id="quiz-starred-toggle"></button>
-    </div>
-    <div class="settings-row">
-      <span class="settings-row-label">⭐ כרטיסיות — מועדפים בלבד</span>
-      <button class="toggle-switch" id="fc-starred-toggle"></button>
     </div>
     <div class="settings-row" style="border-bottom:none">
       <span class="settings-row-label" style="font-size:0.75rem;color:var(--text2)">1,692 מילים | אוצר מילים ירזלוי</span>
