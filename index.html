@@ -38,6 +38,9 @@
   <button class="tab-btn" id="tab-progress" data-tab="progress">
     <span class="tab-icon">📊</span>התקדמות
   </button>
+  <button class="tab-btn" id="tab-amir" data-tab="amir">
+    <span class="tab-icon">📝</span>אמי"ר
+  </button>
 </div>
 
 <!-- ── FLASHCARDS VIEW ── -->
@@ -212,6 +215,82 @@
   <button class="reset-btn" onclick="resetProgress()">🔄 אפס התקדמות</button>
 </div>
 
+<!-- ── AMIR VIEW ── -->
+<div class="view" id="view-amir">
+
+  <!-- Level badge + placement button -->
+  <div class="amir-header" id="amir-header">
+    <div class="amir-level-row">
+      <span class="amir-level-label">רמה שלך:</span>
+      <span class="amir-level-badge" id="amir-level-badge">לא נקבע</span>
+    </div>
+    <button class="amir-placement-btn" onclick="startPlacement()">🎯 מבחן מיקום</button>
+  </div>
+
+  <!-- Placement test -->
+  <div id="amir-placement" style="display:none">
+    <div class="amir-pl-header">
+      <span class="amir-pl-counter" id="amir-pl-counter">שאלה 1 / 15</span>
+      <div class="amir-pl-bar"><div class="amir-pl-fill" id="amir-pl-fill" style="width:0%"></div></div>
+    </div>
+    <div class="amir-sentence-card">
+      <div class="amir-sentence-text" id="amir-pl-sentence"></div>
+    </div>
+    <div class="amir-options" id="amir-pl-options"></div>
+  </div>
+
+  <!-- Placement result -->
+  <div id="amir-placement-result" class="amir-result-card" style="display:none">
+    <div class="amir-result-emoji" id="amir-pl-emoji">📊</div>
+    <div class="amir-result-score" id="amir-pl-score"></div>
+    <div class="amir-result-level" id="amir-pl-result-level"></div>
+    <button class="amir-btn-main" onclick="endPlacement()">המשך ללמידה →</button>
+  </div>
+
+  <!-- Main practice area -->
+  <div id="amir-main">
+    <!-- Sub-mode tabs -->
+    <div class="amir-mode-row">
+      <button class="amir-mode-btn active" id="amir-mode-fill" onclick="setAmirMode('fill')">✏️ השלמת משפטים</button>
+      <button class="amir-mode-btn" id="amir-mode-para" onclick="setAmirMode('para')">🔄 פרפראזה</button>
+    </div>
+
+    <!-- Level chips -->
+    <div class="filter-btns" id="amir-level-chips">
+      <button class="filter-btn active" data-al="my" onclick="setAmirLevelFilter('my')">הרמה שלי</button>
+      <button class="filter-btn" data-al="all" onclick="setAmirLevelFilter('all')">הכל</button>
+      <button class="filter-btn" data-al="1" onclick="setAmirLevelFilter('1')">רמה 1</button>
+      <button class="filter-btn" data-al="2" onclick="setAmirLevelFilter('2')">רמה 2</button>
+      <button class="filter-btn" data-al="3" onclick="setAmirLevelFilter('3')">רמה 3</button>
+    </div>
+
+    <!-- Fill-in-blank -->
+    <div id="amir-fill-content">
+      <div class="amir-q-counter" id="amir-fill-counter"></div>
+      <div class="amir-sentence-card">
+        <div class="amir-sentence-text" id="amir-fill-sentence"></div>
+        <div class="amir-word-hint" id="amir-fill-hint"></div>
+      </div>
+      <div class="amir-options" id="amir-fill-options"></div>
+      <button class="amir-next-btn" id="amir-fill-next" onclick="amirFillNext()" style="display:none">הבא →</button>
+    </div>
+
+    <!-- Paraphrase -->
+    <div id="amir-para-content" style="display:none">
+      <div class="amir-q-counter" id="amir-para-counter"></div>
+      <div class="amir-sentence-card">
+        <div class="amir-mini-label">משפט מקורי:</div>
+        <div class="amir-sentence-text" id="amir-para-original"></div>
+        <hr class="amir-divider">
+        <div class="amir-mini-label">ניסוח חלופי:</div>
+        <div class="amir-sentence-text" id="amir-para-paraphrase"></div>
+      </div>
+      <div class="amir-options" id="amir-para-options"></div>
+      <button class="amir-next-btn" id="amir-para-next" onclick="amirParaNext()" style="display:none">הבא →</button>
+    </div>
+  </div>
+</div>
+
 <!-- BULK ACTION BAR (fixed bottom) -->
 <div class="bulk-bar" id="bulk-bar">
   <span id="bulk-count" style="font-weight:700;font-size:0.9rem;color:var(--accent)"></span>
@@ -239,7 +318,8 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script src="words.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="words.js?v=6"></script>
+<script src="sentences.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
