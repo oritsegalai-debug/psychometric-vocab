@@ -192,17 +192,23 @@ function toggleFCDir() {
   renderFC();
 }
 
-// swipe
-let fcTouchX = null;
-document.getElementById('fc-arena').addEventListener('touchstart', e => { fcTouchX = e.touches[0].clientX; }, {passive: true});
+// swipe + tap (touch)
+let fcTouchX = null, fcTouchY = null;
+document.getElementById('fc-arena').addEventListener('touchstart', e => {
+  fcTouchX = e.touches[0].clientX;
+  fcTouchY = e.touches[0].clientY;
+}, {passive: true});
 document.getElementById('fc-arena').addEventListener('touchend', e => {
   if (fcTouchX === null) return;
   const dx = e.changedTouches[0].clientX - fcTouchX;
-  fcTouchX = null;
-  if (Math.abs(dx) < 40) { fcFlip(); return; }
+  const dy = e.changedTouches[0].clientY - fcTouchY;
+  fcTouchX = null; fcTouchY = null;
+  e.preventDefault(); // block synthetic click so card doesn't double-flip
+  if (Math.abs(dx) < 40 && Math.abs(dy) < 40) { fcFlip(); return; }
   if (dx < -40) fcNav(1);
-  else fcNav(-1);
-}, {passive: true});
+  else if (dx > 40) fcNav(-1);
+});
+// mouse click for desktop
 document.getElementById('fc-card').addEventListener('click', fcFlip);
 
 // keyboard
