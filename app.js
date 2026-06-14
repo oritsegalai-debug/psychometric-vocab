@@ -2,7 +2,7 @@
 const S = {
   known: {}, starred: {},
   quizDir: 'enHe', quizLen: 20,
-  fcDir: 'enHe',
+  fcDir: 'heEn',
   fcGroup: 'all', quizGroup: 'all', typeGroup: 'all',
   darkMode: false,
   listFilter: 'all', listSearch: '',
@@ -596,7 +596,7 @@ document.getElementById('dark-toggle').addEventListener('click', () => {
 
 // ─── INIT ─────────────────────────────────────────────
 document.getElementById('quiz-dir-btn').textContent = S.quizDir === 'enHe' ? 'אנגלית → עברית' : 'עברית → אנגלית';
-document.getElementById('fc-dir-label').textContent  = S.fcDir   === 'enHe' ? 'אנגלית → עברית' : 'עברית → אנגלית';
+document.getElementById('fc-dir-label').textContent  = S.fcDir === 'enHe' ? 'אנגלית → עברית' : 'עברית → אנגלית';
 // Activate correct list filter button
 document.querySelectorAll('.filter-btn[data-f]').forEach(b => b.classList.toggle('active', b.dataset.f === S.listFilter));
 initFC();
